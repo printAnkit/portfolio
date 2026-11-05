@@ -1,26 +1,129 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: #060913;
+  --color-surface: #0d1324;
+  --color-line: #1c2540;
+  --color-muted: #8b95b3;
+  --color-brand: #3b6cff;
+  --color-brand-deep: #1b4dbf;
+  --color-accent: #ffd43b;
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-space-grotesk);
+  --font-studio: var(--font-jetbrains);
+  --font-editorial: var(--font-instrument);
+  --font-brutal: var(--font-archivo);
+  --font-brutal-mono: var(--font-space-mono);
+  --font-pixel: var(--font-pixelify);
+  --font-crt: var(--font-vt323);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* '95-style bevels used by the Retro OS template */
+@utility win-out {
+  background: #c0c0c0;
+  box-shadow:
+    inset -1px -1px #0a0a0a,
+    inset 1px 1px #ffffff,
+    inset -2px -2px #808080,
+    inset 2px 2px #dfdfdf;
+}
+@utility win-in {
+  box-shadow:
+    inset -1px -1px #ffffff,
+    inset 1px 1px #808080,
+    inset -2px -2px #dfdfdf,
+    inset 2px 2px #0a0a0a;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  --page-bg: #060913;
+}
+html[data-template="studio"] {
+  --page-bg: #141416;
+}
+html[data-template="editorial"] {
+  --page-bg: #f3eee4;
+}
+html[data-template="brutal"] {
+  --page-bg: #fff8e1;
+}
+html[data-template="retro"] {
+  --page-bg: #008080;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--page-bg);
+  color: #e8ecf8;
+}
+
+/* Until React hydrates, the server renders the default template. Hide it if the
+   saved template (set on <html> by an inline script) is a different one. */
+html[data-template="studio"] [data-template-root]:not([data-template-root="studio"]),
+html[data-template="editorial"] [data-template-root]:not([data-template-root="editorial"]),
+html[data-template="brutal"] [data-template-root]:not([data-template-root="brutal"]),
+html[data-template="retro"] [data-template-root]:not([data-template-root="retro"]) {
+  visibility: hidden;
+}
+
+/* Recording light / cursor blink */
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+.animate-blink {
+  animation: blink 1.1s steps(1) infinite;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
+/* Subtle grid backdrop used behind the hero */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+/* Scroll reveal, toggled by <Reveal> */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-marquee,
+  .animate-blink {
+    animation: none;
+  }
 }
